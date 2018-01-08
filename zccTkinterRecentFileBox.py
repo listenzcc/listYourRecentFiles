@@ -13,7 +13,7 @@ from parseWinShortCut import getPathFromLink
 import subprocess
 
 root = tk.Tk()
-frm = tk.Frame(root, width=0, background='red')
+frm = tk.Frame(root, width=0, height=0, background='red')
 label = tk.Label(root,
                  anchor=tk.NW,
                  text='',
@@ -43,7 +43,7 @@ recentFilesDir = 'C:\\Users\\zcc\\AppData\\Roaming\\Microsoft\\Windows\\Recent'
 
 def rootIni(root):
     root.attributes("-alpha", 0.6)
-    root.geometry("800x1030+-5+-5")
+    root.geometry("800x1055+-5+-5")
     root.overrideredirect(1)
     #root.attributes('-fullscreen', 'true')
     root.attributes("-transparentcolor","red")
@@ -51,14 +51,17 @@ def rootIni(root):
 
 def mytkButton(master, s, re):
     B = tk.Button(master,
-                  anchor = tk.W,
+                  anchor = tk.NW,
                   text = os.path.basename(s),
                   command = lambda : foo(master, s, re),
                   background = 'gray',
                   fg = 'white',
                   font=(fontStyle, 8),
                   width = 14)
-    short2fullDict[os.path.basename(s)] = s
+    if re==1:
+        short2fullDict[s] = s
+    else:
+        short2fullDict[os.path.basename(s)] = s
     B.bind('<Enter>', handlerAdaptor(enterB, B))
     B.bind('<Leave>', handlerAdaptor(leaveB, B))
     B.bind('<Button-3>', handlerAdaptor(rightB, B, re))
@@ -70,6 +73,7 @@ def mytkButton(master, s, re):
 def clearButtonStuff():
     while buttonList:
         buttonList.pop().pack_forget()
+    print(buttonList)
     full2shortDict.clear()
     short2fullDict.clear()
     nB.clearNum()
@@ -95,10 +99,10 @@ def foo(master, s, re):
         
     clearButtonStuff()
     master.pack_forget()
-    master = tk.Frame(root, width=0, background='red')
+    master = tk.Frame(root, width=0, height=0, background='red')
     addButtons(master)
     #master.pack(side=tk.LEFT)
-    master.grid(row=1, column=0, sticky=tk.W)
+    master.grid(row=1, column=0, sticky=tk.NW)
     #root.destroy()
 
 def rightB(event, B, re):
@@ -175,7 +179,8 @@ def addButtons(master):
     k = 0
     for e in recentFiles:
         k += 1
-        if k==11:
+        if k==50:
+            #break
             pass#break
         fullFileName = getPathFromLink(e[0])
         print(fullFileName, '\t', e[1])
