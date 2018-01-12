@@ -27,48 +27,58 @@ short2fullDict = {}
 numButtons = 0
 fontStyle = '微软雅黑'
 
+
 class numButtons():
     nb = 0
+
     def __init__(self):
         self.nb = 0
+
     def newButton(self):
         self.nb += 1
         return self.nb-1
+
     def clearNum(self):
         self.nb = 0
 
+
 nB = numButtons()
+
 
 recentFilesDir = 'C:\\Users\\zcc\\AppData\\Roaming\\Microsoft\\Windows\\Recent'
 
+
 def rootIni(root):
     root.attributes("-alpha", 0.6)
-    root.geometry("800x1055+-5+-5")
+    #root.geometry("800x1055+-5+-5")
+    root.geometry("800x%s+-5+-5" % (root.winfo_screenheight()-25))
     root.overrideredirect(1)
     #root.attributes('-fullscreen', 'true')
     root.attributes("-transparentcolor","red")
     root["background"] = "red"
 
+
 def mytkButton(master, s, re):
     B = tk.Button(master,
-                  anchor = tk.NW,
-                  text = os.path.basename(s),
-                  command = lambda : foo(master, s, re),
-                  background = 'gray',
-                  fg = 'white',
+                  anchor=tk.NW,
+                  text=os.path.basename(s),
+                  command=lambda: foo(master, s, re),
+                  background='gray',
+                  fg='white',
                   font=(fontStyle, 8),
-                  width = 14)
-    if re==1:
+                  width=14)
+    if re == 1:
         short2fullDict[s] = s
     else:
         short2fullDict[os.path.basename(s)] = s
-    B.bind('<Enter>', handlerAdaptor(enterB, B))
+    B.bind('<Enter>', handlerAdaptor(enterB, B, s))
     B.bind('<Leave>', handlerAdaptor(leaveB, B))
-    B.bind('<Button-3>', handlerAdaptor(rightB, B, re))
+    B.bind('<Button-3>', handlerAdaptor(rightB, B, re, s))
     #B.pack(expand=tk.YES, fill='both')
     #B.pack(expand=tk.YES, fill='both')
     B.grid(row=nB.newButton(), column=0, sticky=tk.W)
     return B
+
 
 def clearButtonStuff():
     while buttonList:
@@ -78,9 +88,11 @@ def clearButtonStuff():
     short2fullDict.clear()
     nB.clearNum()
 
+
 def handlerAdaptor(fun, *args):  
     '''''事件处理函数的适配器，相当于中介，那个event是从那里来的呢，我也纳闷，这也许就是python的伟大之处吧'''  
     return lambda event, fun=fun, args=args: fun(event, *args) 
+
 
 def foo(master, s, re):
     print(s)
@@ -105,12 +117,14 @@ def foo(master, s, re):
     master.grid(row=1, column=0, sticky=tk.NW)
     #root.destroy()
 
-def rightB(event, B, re):
+
+def rightB(event, B, re, s):
     if re==1:
         print(B['text'])
+        subprocess.Popen('explorer '+recentFilesDir)
         return
-    print(short2fullDict[B['text']])
-    ps = os.path.dirname(short2fullDict[B['text']])
+    print(s)
+    ps = os.path.dirname(s)
     print(ps)
     try:
         os.stat(ps)
@@ -119,17 +133,19 @@ def rightB(event, B, re):
         return
     subprocess.Popen('explorer '+ps)
 
-def enterB(event, B):
+
+def enterB(event, B, s):
     if B['text'].__len__()<20:
         w = 20
     else:
         w = 0
     B.configure(anchor=tk.E, background='gray', font=(fontStyle, 8), width=w)
     B.grid(padx=0)
-    label.configure(text=short2fullDict[B['text']], fg='white', bg='black')
+    label.configure(text=s, fg='white', bg='black')
     root.attributes("-alpha", 1)
     root.call('wm', 'attributes', '.', '-topmost', '1')
     #print('%d %d'%(event.x_root, event.y_root))
+
 
 def leaveB(event, B):
     B.configure(anchor=tk.W, background='gray', font=(fontStyle, 8), width=14)
@@ -137,6 +153,7 @@ def leaveB(event, B):
     label.configure(text='', bg='red')
     root.attributes("-alpha", 0.6)
     root.call('wm', 'attributes', '.', '-topmost', '0')
+
 
 def collectFiles(recentFilesDir):
     listName = os.listdir(recentFilesDir)
@@ -163,10 +180,12 @@ def collectFiles(recentFilesDir):
         #print(rawDictRecentFiles[n])
     return rawDictRecentFiles
 
+
 def sortFiles(recentFilesDir):
     return sorted(collectFiles(recentFilesDir).items(),
                   key=lambda x:x[1],
                   reverse=True)
+
 
 def addButtons(master):
     recentFiles = listRecentFiles.sortFiles(recentFilesDir)
@@ -179,7 +198,7 @@ def addButtons(master):
     k = 0
     for e in recentFiles:
         k += 1
-        if k==50:
+        if k == 50:
             #break
             pass#break
         fullFileName = getPathFromLink(e[0])
@@ -189,11 +208,13 @@ def addButtons(master):
         full2shortDict[fullFileName] = e[0]
     return buttonList
 
+
 def main():
     print(time.strftime("%X %d-%b-%Y", time.localtime()))
     print('hello zcc')
     rootIni(root)
     addButtons(frm)
+
 
 if __name__ == '__main__':
     main()
