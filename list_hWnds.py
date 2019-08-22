@@ -1,13 +1,5 @@
 # coding=utf-8
 
-__author__ = 'Administrator'
-
-__doc__ = '''
-pythonwin中win32gui的用法
-本文件演如何使用win32gui来遍历系统中所有的顶层窗口，
-并遍历所有顶层窗口中的子窗口
-'''
-
 import win32gui
 from pprint import pprint
 
