@@ -45,7 +45,7 @@ class numButtons():
 nB = numButtons()
 
 
-recentFilesDir = 'C:\\Users\\zcc\\AppData\\Roaming\\Microsoft\\Windows\\Recent'
+recentFilesDir = 'C:\\Users\\liste\\AppData\\Roaming\\Microsoft\\Windows\\Recent'
 
 
 def rootIni(root):
@@ -89,9 +89,9 @@ def clearButtonStuff():
     nB.clearNum()
 
 
-def handlerAdaptor(fun, *args):  
-    '''''事件处理函数的适配器，相当于中介，那个event是从那里来的呢，我也纳闷，这也许就是python的伟大之处吧'''  
-    return lambda event, fun=fun, args=args: fun(event, *args) 
+def handlerAdaptor(fun, *args):
+    '''''事件处理函数的适配器，相当于中介，那个event是从那里来的呢，我也纳闷，这也许就是python的伟大之处吧'''
+    return lambda event, fun=fun, args=args: fun(event, *args)
 
 
 def foo(master, s, re):
@@ -108,7 +108,7 @@ def foo(master, s, re):
             print(e)
             return
         subprocess.Popen('explorer '+s)
-        
+
     clearButtonStuff()
     master.pack_forget()
     master = tk.Frame(root, width=0, height=0, background='red')

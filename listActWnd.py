@@ -7,21 +7,27 @@ Created on Wed Dec 20 16:56:27 2017
 
 import win32gui
 
-titles = set()
+windows_enabled = set()
+windows_visible = set()
 
-def foo(hwnd,mouse):
-    if False and win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd) and win32gui.IsWindowVisible(hwnd):
-        titles.add(win32gui.GetWindowText(hwnd))
+
+def parse_windows(hwnd, mouse):
+    if win32gui.IsWindow(hwnd) and win32gui.IsWindowEnabled(hwnd):
+        windows_enabled.add(win32gui.GetWindowText(hwnd))
+
     if win32gui.IsWindow(hwnd) and win32gui.IsWindowVisible(hwnd):
-        titles.add(win32gui.GetWindowText(hwnd))
+        windows_visible.add(win32gui.GetWindowText(hwnd))
+
 
 def main():
     print('hello wnds')
-    win32gui.EnumWindows(foo, 0)
-    lt = [t for t in titles if t]
-    lt.sort()
-    for t in lt:
-        print(t)
+    win32gui.EnumWindows(parse_windows, 0)
+
+    for windows in [windows_enabled, windows_visible]:
+        print('-' * 80)
+        for j, t in enumerate(windows):
+            print(j, t)
+
 
 if __name__ == '__main__':
-	main()
+    main()
