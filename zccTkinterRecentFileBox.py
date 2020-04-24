@@ -19,7 +19,7 @@ label = tk.Label(root,
                  text='',
                  fg='white',
                  background='red')
-#label.pack(expand=tk.YES)
+# label.pack(expand=tk.YES)
 label.grid(row=0, column=0, sticky=tk.W)
 buttonList = []
 full2shortDict = {}
@@ -50,11 +50,11 @@ recentFilesDir = 'C:\\Users\\liste\\AppData\\Roaming\\Microsoft\\Windows\\Recent
 
 def rootIni(root):
     root.attributes("-alpha", 0.6)
-    #root.geometry("800x1055+-5+-5")
+    # root.geometry("800x1055+-5+-5")
     root.geometry("800x%s+-5+-5" % (root.winfo_screenheight()-25))
     root.overrideredirect(1)
     #root.attributes('-fullscreen', 'true')
-    root.attributes("-transparentcolor","red")
+    root.attributes("-transparentcolor", "red")
     root["background"] = "red"
 
 
@@ -83,7 +83,7 @@ def mytkButton(master, s, re):
 def clearButtonStuff():
     while buttonList:
         buttonList.pop().pack_forget()
-    print(buttonList)
+    # print(buttonList)
     full2shortDict.clear()
     short2fullDict.clear()
     nB.clearNum()
@@ -95,7 +95,7 @@ def handlerAdaptor(fun, *args):
 
 
 def foo(master, s, re):
-    print(s)
+    # print(s)
     try:
         os.utime(full2shortDict[s], (time.time(), time.time()))
     except Exception as e:
@@ -113,13 +113,13 @@ def foo(master, s, re):
     master.pack_forget()
     master = tk.Frame(root, width=0, height=0, background='red')
     addButtons(master)
-    #master.pack(side=tk.LEFT)
+    # master.pack(side=tk.LEFT)
     master.grid(row=1, column=0, sticky=tk.NW)
-    #root.destroy()
+    # root.destroy()
 
 
 def rightB(event, B, re, s):
-    if re==1:
+    if re == 1:
         print(B['text'])
         subprocess.Popen('explorer '+recentFilesDir)
         return
@@ -135,7 +135,7 @@ def rightB(event, B, re, s):
 
 
 def enterB(event, B, s):
-    if B['text'].__len__()<20:
+    if B['text'].__len__() < 20:
         w = 20
     else:
         w = 0
@@ -159,31 +159,30 @@ def collectFiles(recentFilesDir):
     listName = os.listdir(recentFilesDir)
     rawDictRecentFiles = {}
     for n in listName:
-        #print(n)
-        print(n)
+        # print(n)
         try:
             fullFileName = getPathFromLink(os.path.join(recentFilesDir, n))
             stat = os.stat(os.path.join(recentFilesDir, n))
         except Exception as e:
-            print(n+'\tnot a link, pass.')
+            # print(n+'\tnot a link, pass.')
             continue
         try:
             os.stat(fullFileName)
         except Exception as e:
-            print(fullFileName+'\tnot found, pass.')
+            # print(fullFileName+'\tnot found, pass.')
             continue
         if rawDictRecentFiles.get(fullFileName):
-            if stat.st_mtime>rawDictRecentFiles[fullFileName]:
+            if stat.st_mtime > rawDictRecentFiles[fullFileName]:
                 rawDictRecentFiles[fullFileName] = stat.st_mtime
         else:
             rawDictRecentFiles[fullFileName] = stat.st_mtime
-        #print(rawDictRecentFiles[n])
+        # print(rawDictRecentFiles[n])
     return rawDictRecentFiles
 
 
 def sortFiles(recentFilesDir):
     return sorted(collectFiles(recentFilesDir).items(),
-                  key=lambda x:x[1],
+                  key=lambda x: x[1],
                   reverse=True)
 
 
@@ -199,13 +198,14 @@ def addButtons(master):
     for e in recentFiles:
         k += 1
         if k == 50:
-            #break
-            pass#break
+            # break
+            pass  # break
         fullFileName = getPathFromLink(e[0])
-        print(fullFileName, '\t', e[1])
+        # print(fullFileName, '\t', e[1])
         B = mytkButton(master, fullFileName, 0)
         buttonList.append(B)
         full2shortDict[fullFileName] = e[0]
+    print(f'Count is {k}')
     return buttonList
 
 
@@ -220,6 +220,6 @@ if __name__ == '__main__':
     main()
     #w, h = root.maxsize()
     #root.geometry('{}x{}+-0+-0'.format(w, h))
-    #frm.pack(side=tk.LEFT)
+    # frm.pack(side=tk.LEFT)
     frm.grid(row=1, column=0, sticky=tk.W)
     root.mainloop()
